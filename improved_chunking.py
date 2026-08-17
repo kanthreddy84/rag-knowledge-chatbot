@@ -5,18 +5,16 @@ Splits documents into smaller, semantically meaningful chunks
 
 import re
 from pathlib import Path
-from sentence_transformers import SentenceTransformer
-import tiktoken
 
 class ImprovedChunker:
     def __init__(self, chunk_size=300, overlap=50):
         self.chunk_size = chunk_size
         self.overlap = overlap
-        self.encoding = tiktoken.get_encoding("cl100k_base")
 
     def count_tokens(self, text):
-        """Count tokens in text"""
-        return len(self.encoding.encode(text))
+        """Estimate tokens using simple word count (tiktoken not available in production)"""
+        # Rough estimate: 1 token ≈ 1.3 words
+        return len(text.split()) // 1.3
 
     def detect_sections(self, text):
         """Detect section headers and split document"""

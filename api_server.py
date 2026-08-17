@@ -14,9 +14,16 @@ from pathlib import Path
 
 # Import RAG modules
 from improved_chunking import ImprovedChunker
-from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+
+# Lazy load sentence_transformers (not available in production)
+try:
+    from sentence_transformers import SentenceTransformer
+    EMBEDDINGS_AVAILABLE = True
+except ImportError:
+    EMBEDDINGS_AVAILABLE = False
+    SentenceTransformer = None
 
 app = FastAPI(
     title="DataFactZ RAG API",
@@ -34,12 +41,18 @@ app.add_middleware(
 )
 
 # Initialize models
+embedding_model = None
 try:
-    embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
-    chunker = ImprovedChunker(chunk_size=300, overlap=50)
-    print("Models loaded successfully")
+    if EMBEDDINGS_AVAILABLE and SentenceTransformer:
+        embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+        print("✓ Embedding model loaded")
+    else:
+        print("⚠ Embedding model not available (using keyword search fallback)")
 except Exception as e:
-    print(f"Error loading models: {e}")
+    print(f"⚠ Could not load embedding model: {e}")
+
+chunker = ImprovedChunker(chunk_size=300, overlap=50)
+print("✓ Chunker initialized")
 
 # In-memory storage (replace with database for production)
 documents_store = []
@@ -110,12 +123,26 @@ async def query_documents(request: QueryRequest):
         import time
         start_time = time.time()
 
-        # Embed query
-        query_embedding = embedding_model.encode(request.query, show_progress_bar=False)
-
-        # Find similar chunks
-        similarities = cosine_similarity([query_embedding], embeddings_store)[0]
-        top_indices = np.argsort(similarities)[::-1][:5]
+        # Find similar chunks using embeddings or keyword matching
+        if embedding_model and embeddings_store:
+            # Embed query using sentence transformers
+            query_embedding = embedding_model.encode(request.query, show_progress_bar=False)
+            similarities = cosine_similarity([query_embedding], embeddings_store)[0]
+            top_indices = np.argsort(similarities)[::-1][:5]
+        else:
+            # Fallback: keyword matching
+            query_words = set(request.query.lower().split())
+            similarities = []
+            for chunk in chunks_store:
+                chunk_words = set(chunk['text'].lower().split())
+                # Jaccard similarity
+                if len(chunk_words | query_words) > 0:
+                    similarity = len(chunk_words & query_words) / len(chunk_words | query_words)
+                else:
+                    similarity = 0
+                similarities.append(similarity)
+            similarities = np.array(similarities)
+            top_indices = np.argsort(similarities)[::-1][:5]
 
         # Extract citations (lower threshold for better matching)
         citations = []
