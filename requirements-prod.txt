@@ -22,6 +22,8 @@ python-dotenv>=1.0.0
 # Utilities
 tqdm>=4.60.0
 typing-extensions>=4.0.0
+numpy>=1.24.0
+scikit-learn>=1.0.0
 
 # LLM API
 anthropic>=0.30.0
