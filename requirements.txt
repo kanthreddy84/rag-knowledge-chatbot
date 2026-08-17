@@ -76,10 +76,8 @@ scikit-learn>=1.5.0
 # VECTOR DATABASE - CHOOSE ONE (All have FREE options)
 # ═══════════════════════════════════════════════════════════════════════════
 
-# ⭐ RECOMMENDED: FAISS (FREE, local, fastest)
-# Facebook AI Similarity Search | No API key | Perfect for local use
-faiss-cpu>=1.8.0
-# faiss-gpu>=1.8.0  # Uncomment if you have NVIDIA GPU
+# Vector search handled by sklearn cosine_similarity
+# No additional vector DB needed - using in-memory storage
 
 # ALTERNATIVE 1: ChromaDB (FREE, local, easy to use)
 # chromadb==0.4.24
