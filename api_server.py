@@ -177,17 +177,28 @@ async def query_documents(request: QueryRequest):
             similarities = cosine_similarity([query_embedding], embeddings_store)[0]
             top_indices = np.argsort(similarities)[::-1][:5]
         else:
-            # Fallback: keyword matching
+            # Fallback: improved keyword matching
             query_words = set(request.query.lower().split())
             similarities = []
             for chunk in chunks_store:
-                chunk_words = set(chunk['text'].lower().split())
-                # Jaccard similarity
-                if len(chunk_words | query_words) > 0:
-                    similarity = len(chunk_words & query_words) / len(chunk_words | query_words)
+                chunk_text = chunk['text'].lower()
+                chunk_words = set(chunk_text.split())
+
+                # Count matching words (simpler and more effective than Jaccard)
+                matches = len(chunk_words & query_words)
+
+                # Also check for substring matches (e.g., "dress" in "dress code")
+                substring_matches = sum(1 for qw in query_words if qw in chunk_text)
+
+                # Combined score: prioritize exact word matches but also count substrings
+                if len(query_words) > 0:
+                    word_score = matches / len(query_words)
+                    substring_score = substring_matches / len(query_words)
+                    similarity = (word_score * 0.7 + substring_score * 0.3)
                 else:
                     similarity = 0
                 similarities.append(similarity)
+
             similarities = np.array(similarities)
             top_indices = np.argsort(similarities)[::-1][:5]
 
