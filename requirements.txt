@@ -27,30 +27,28 @@
 # ═══════════════════════════════════════════════════════════════════════════
 
 # Document Processing (100% FREE)
-pypdf==4.2.0
-python-docx==1.2.0
-beautifulsoup4==4.12.3
-lxml==4.9.4
+pypdf>=4.0.0
+python-docx>=1.0.0
+beautifulsoup4>=4.12.0
 
 # Web & API (FREE)
-requests==2.32.3
-fastapi==0.110.3
-uvicorn==0.27.0
+requests>=2.30.0
+fastapi>=0.100.0
+uvicorn>=0.23.0
 
 # Data Validation (FREE) - v1 for Render compatibility
-pydantic==1.10.15
+pydantic>=1.10.0
 
 # Database (FREE - PostgreSQL driver)
-psycopg2-binary==2.9.9
-sqlalchemy==2.0.27
+psycopg2-binary>=2.9.0
+sqlalchemy>=2.0.0
 
 # Configuration (FREE)
-python-dotenv==1.0.1
+python-dotenv>=1.0.0
 
 # Utilities (FREE)
-tqdm==4.66.2
-typing-extensions==4.11.0
-tiktoken==0.7.0
+tqdm>=4.60.0
+typing-extensions>=4.0.0
 
 # ═══════════════════════════════════════════════════════════════════════════
 # EMBEDDINGS - CHOOSE ONE (All are FREE for local use)
@@ -101,28 +99,28 @@ scikit-learn>=1.5.0
 # RECOMMENDED PAID: Anthropic Claude API (PAID, best quality)
 # Cost: $3/1M input + $15/1M output tokens (~$3-5/month typical)
 # Quality: 95%+ | Setup: 2 minutes
-anthropic==0.34.0
+anthropic>=0.30.0
 
 # ALTERNATIVE PAID: OpenAI (not needed if using above)
-# openai==1.52.0
+# openai>=1.50.0
 
 # ═══════════════════════════════════════════════════════════════════════════
 # DEVELOPMENT & TESTING (Optional - for developers only)
 # ═══════════════════════════════════════════════════════════════════════════
 
 # Code formatting
-black==24.3.0
+black>=24.0.0
 
 # Linting
-pylint==3.2.0
-flake8==7.0.0
+pylint>=3.0.0
+flake8>=7.0.0
 
 # Type checking
-mypy==1.11.0
+mypy>=1.10.0
 
 # Testing
-pytest==8.2.0
-pytest-asyncio==0.23.3
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
 
 # ═══════════════════════════════════════════════════════════════════════════
 # SETUP INSTRUCTIONS
