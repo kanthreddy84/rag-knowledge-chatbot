@@ -104,50 +104,48 @@ async def health_check():
     }
 
 async def ensure_documents_indexed():
-    """Ensure documents are indexed, auto-reindex if needed"""
+    """Ensure documents are indexed, auto-reindex if needed (for multi-worker environments)"""
     global chunks_store, embeddings_store, documents_store, full_documents
 
-    if not chunks_store or not embeddings_store:
-        # Auto-reindex
-        try:
-            data_folder = Path("sample_data")
-            if data_folder.exists():
-                policy_files = list(data_folder.glob("*.txt"))
-                if policy_files:
-                    chunks_store = []
-                    embeddings_store = []
-                    documents_store = []
-                    full_documents = {}
+    try:
+        data_folder = Path("sample_data")
+        if data_folder.exists():
+            policy_files = list(data_folder.glob("*.txt"))
+            if policy_files:
+                chunks_store = []
+                embeddings_store = []
+                documents_store = []
+                full_documents = {}
 
-                    for file_path in sorted(policy_files):
-                        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                            full_text = f.read()
-                        full_documents[file_path.stem] = full_text
+                for file_path in sorted(policy_files):
+                    with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                        full_text = f.read()
+                    full_documents[file_path.stem] = full_text
 
-                        chunks = chunker.process_document(file_path, file_path.stem)
-                        for chunk_dict in chunks:
-                            chunks_store.append(chunk_dict)
+                    chunks = chunker.process_document(file_path, file_path.stem)
+                    for chunk_dict in chunks:
+                        chunks_store.append(chunk_dict)
 
-                        chunk_texts = [c['text'] for c in chunks]
-                        if embedding_model:
-                            chunk_embeddings = embedding_model.encode(chunk_texts, show_progress_bar=False)
-                        else:
-                            chunk_embeddings = np.zeros((len(chunk_texts), 384))
-                        embeddings_store.extend(chunk_embeddings)
+                    chunk_texts = [c['text'] for c in chunks]
+                    if embedding_model:
+                        chunk_embeddings = embedding_model.encode(chunk_texts, show_progress_bar=False)
+                    else:
+                        chunk_embeddings = np.zeros((len(chunk_texts), 384))
+                    embeddings_store.extend(chunk_embeddings)
 
-                        total_tokens = sum(c['token_count'] for c in chunks)
-                        documents_store.append(DocumentInfo(
-                            id=file_path.stem,
-                            filename=file_path.name,
-                            title=file_path.stem.replace('_', ' ').title(),
-                            description=f"HR policy document with {len(chunks)} chunks",
-                            chunk_count=len(chunks),
-                            token_count=total_tokens,
-                            indexed_at=datetime.now().isoformat(),
-                            status="indexed"
-                        ))
-        except Exception as e:
-            print(f"Auto-reindex error: {e}")
+                    total_tokens = sum(c['token_count'] for c in chunks)
+                    documents_store.append(DocumentInfo(
+                        id=file_path.stem,
+                        filename=file_path.name,
+                        title=file_path.stem.replace('_', ' ').title(),
+                        description=f"HR policy document with {len(chunks)} chunks",
+                        chunk_count=len(chunks),
+                        token_count=total_tokens,
+                        indexed_at=datetime.now().isoformat(),
+                        status="indexed"
+                    ))
+    except Exception as e:
+        print(f"Auto-reindex error: {e}")
 
 @app.post("/api/query", response_model=QueryResponse)
 async def query_documents(request: QueryRequest):
@@ -159,13 +157,13 @@ async def query_documents(request: QueryRequest):
     if not request.query.strip():
         raise HTTPException(status_code=400, detail="Query cannot be empty")
 
-    # Auto-reindex if needed
+    # Always ensure documents are indexed (required for multi-worker environments)
     await ensure_documents_indexed()
 
     if not chunks_store or not embeddings_store:
         raise HTTPException(
             status_code=503,
-            detail="No documents indexed. Please index documents first."
+            detail="No documents indexed. Sample data folder may be missing."
         )
 
     try:
