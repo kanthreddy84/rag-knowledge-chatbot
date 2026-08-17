@@ -59,10 +59,10 @@ tiktoken==0.7.0
 
 # ⭐ RECOMMENDED: Sentence Transformers (FREE, local)
 # No API key needed | Runs on CPU/GPU | 97% quality of paid services
-sentence-transformers==3.0.1
-transformers==4.41.0
-torch==2.3.0
-scikit-learn==1.5.0
+sentence-transformers>=3.0.0
+transformers>=4.41.0
+torch>=2.9.0
+scikit-learn>=1.5.0
 
 # OPTIONAL PAID: Together AI (if using Llama API)
 # Cost: $0.10 per 1M tokens | Remove if using free sentence-transformers
@@ -78,8 +78,8 @@ scikit-learn==1.5.0
 
 # ⭐ RECOMMENDED: FAISS (FREE, local, fastest)
 # Facebook AI Similarity Search | No API key | Perfect for local use
-faiss-cpu==1.8.0
-# faiss-gpu==1.8.0  # Uncomment if you have NVIDIA GPU
+faiss-cpu>=1.8.0
+# faiss-gpu>=1.8.0  # Uncomment if you have NVIDIA GPU
 
 # ALTERNATIVE 1: ChromaDB (FREE, local, easy to use)
 # chromadb==0.4.24
