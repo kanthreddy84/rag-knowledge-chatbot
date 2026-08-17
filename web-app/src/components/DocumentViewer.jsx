@@ -17,15 +17,21 @@ const DocumentViewer = ({ citation, onClose }) => {
         setLoading(true);
         setError(null);
 
-        const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+        const apiUrl = process.env.REACT_APP_API_URL || 'https://rag-knowledge-chatbot.onrender.com';
         const docId = citation.document_id || citation.document_title.replace(/\s+/g, '_').toLowerCase();
-        const response = await axios.get(
-          `${apiUrl}/api/documents/${docId}/content`
-        );
+        const url = `${apiUrl}/api/documents/${docId}/content`;
+
+        console.log('Fetching document from:', url);
+        const response = await axios.get(url, { timeout: 10000 });
 
         setContent(response.data.content);
       } catch (err) {
-        setError(`Failed to load document: ${err.response?.status === 404 ? 'Document not found (404)' : err.message}`);
+        const errorMsg = err.response?.status === 404
+          ? 'Document not found (404)'
+          : err.response?.status
+          ? `HTTP ${err.response.status}: ${err.response.data?.detail || err.message}`
+          : err.message;
+        setError(`Failed to load document: ${errorMsg}`);
         console.error('Document fetch error:', err);
       } finally {
         setLoading(false);
