@@ -37,9 +37,8 @@ requests==2.32.3
 fastapi==0.110.3
 uvicorn==0.27.0
 
-# Data Validation (FREE)
-pydantic==2.6.4
-pydantic-settings==2.2.1
+# Data Validation (FREE) - v1 for Render compatibility
+pydantic==1.10.15
 
 # Database (FREE - PostgreSQL driver)
 psycopg2-binary==2.9.9
