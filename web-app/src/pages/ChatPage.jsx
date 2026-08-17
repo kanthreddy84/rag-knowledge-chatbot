@@ -18,7 +18,7 @@ const initialMessage = {
 };
 
 const ChatPage = () => {
-  const { conversations, currentConversationId, saveConversation, loadConversation, setCurrentConversationId } = useChatHistory();
+  const { currentConversationId, saveConversation, loadConversation } = useChatHistory();
   const [messages, setMessages] = useState([initialMessage]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -37,7 +37,7 @@ const ChatPage = () => {
         setConversationId(currentConversationId);
       }
     }
-  }, [currentConversationId]);
+  }, [currentConversationId, loadConversation]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -52,7 +52,7 @@ const ChatPage = () => {
     if (conversationId && messages.length > 1) {
       saveConversation(messages, conversationId);
     }
-  }, [messages, conversationId]);
+  }, [messages, conversationId, saveConversation]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -169,8 +169,8 @@ const ChatPage = () => {
                         <div className="text-sm leading-relaxed text-datafacz-gray-50 prose prose-invert max-w-none">
                           <ReactMarkdown
                             components={{
-                              h2: ({ node, ...props }) => <h2 className="text-base font-bold text-datafacz-orange mt-3 mb-2" {...props} />,
-                              h3: ({ node, ...props }) => <h3 className="text-sm font-semibold text-datafacz-gray-100 mt-2 mb-1" {...props} />,
+                              h2: ({ node, children, ...props }) => <h2 className="text-base font-bold text-datafacz-orange mt-3 mb-2" {...props}>{children}</h2>,
+                              h3: ({ node, children, ...props }) => <h3 className="text-sm font-semibold text-datafacz-gray-100 mt-2 mb-1" {...props}>{children}</h3>,
                               p: ({ node, ...props }) => <p className="mb-2" {...props} />,
                               ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-2 space-y-1" {...props} />,
                               li: ({ node, ...props }) => <li className="text-sm" {...props} />,

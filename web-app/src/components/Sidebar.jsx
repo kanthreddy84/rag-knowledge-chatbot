@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { MessageSquare, FileText, Settings, Plus, LogOut, ChevronRight, Trash2, AlertCircle } from 'lucide-react';
+import { MessageSquare, FileText, Settings, Plus, LogOut, Trash2, AlertCircle } from 'lucide-react';
 import clsx from 'clsx';
 import { Button } from './Button';
 import { useChatHistory } from '../context/ChatHistoryContext';

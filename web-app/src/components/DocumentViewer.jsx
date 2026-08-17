@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { X, Download, Copy, Check, ZoomIn, ZoomOut } from 'lucide-react';
 import { Button } from './Button';
 import axios from 'axios';
-import clsx from 'clsx';
 
 const DocumentViewer = ({ citation, onClose }) => {
   const [content, setContent] = useState('');
@@ -116,7 +115,7 @@ const DocumentViewer = ({ citation, onClose }) => {
         }
 
         // Detect headings (all caps or starts with numbers)
-        const isHeading = /^[A-Z0-9\s\.]+$/.test(trimmed) && trimmed.length < 80;
+        const isHeading = /^[A-Z0-9\s.]+$/.test(trimmed) && trimmed.length < 80;
         const isNumbered = /^\d+\./.test(trimmed);
         const isSectionHeader = /^[A-Z][A-Z\s]+$/.test(trimmed) && trimmed.length > 5;
 
