@@ -249,9 +249,13 @@ async def reindex_documents():
             for chunk_dict in chunks:
                 chunks_store.append(chunk_dict)
 
-            # Create embeddings
+            # Create embeddings if model available
             chunk_texts = [c['text'] for c in chunks]
-            chunk_embeddings = embedding_model.encode(chunk_texts, show_progress_bar=False)
+            if embedding_model:
+                chunk_embeddings = embedding_model.encode(chunk_texts, show_progress_bar=False)
+            else:
+                # Fallback: create dummy embeddings for keyword search
+                chunk_embeddings = np.zeros((len(chunk_texts), 384))
             embeddings_store.extend(chunk_embeddings)
 
             # Add document info
@@ -419,8 +423,13 @@ async def startup_event():
                     for chunk_dict in chunks:
                         chunks_store.append(chunk_dict)
 
+                    # Create embeddings if model available, otherwise use dummy embeddings
                     chunk_texts = [c['text'] for c in chunks]
-                    chunk_embeddings = embedding_model.encode(chunk_texts, show_progress_bar=False)
+                    if embedding_model:
+                        chunk_embeddings = embedding_model.encode(chunk_texts, show_progress_bar=False)
+                    else:
+                        # Fallback: create dummy embeddings (all zeros) for keyword search
+                        chunk_embeddings = np.zeros((len(chunk_texts), 384))
                     embeddings_store.extend(chunk_embeddings)
 
                     total_tokens = sum(c['token_count'] for c in chunks)
