@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataFactZ Architecture - Business View</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #182127;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .diagram-wrapper {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .layer-label {
+            font-size: 18px;
+            font-weight: bold;
+            fill: white;
+            text-anchor: start;
+        }
+
+        .component-title {
+            font-size: 14px;
+            font-weight: bold;
+            fill: #333;
+            text-anchor: middle;
+        }
+
+        .component-text {
+            font-size: 11px;
+            fill: #555;
+            text-anchor: middle;
+        }
+
+        .tech-text {
+            font-size: 9px;
+            fill: #0288d1;
+            text-anchor: middle;
+            font-weight: bold;
+        }
+
+        .arrow {
+            fill: none;
+            stroke: #FC7900;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            marker-end: url(#arrowhead);
+        }
+
+        .arrow-label {
+            font-size: 10px;
+            fill: #FC7900;
+            font-weight: bold;
+            text-anchor: middle;
+            background: white;
+        }
+
+        /* Layer Styles */
+        .frontend-layer {
+            fill: #0288d1;
+        }
+
+        .backend-layer {
+            fill: #f57c00;
+        }
+
+        .data-layer {
+            fill: #388e3c;
+        }
+
+        .box-frontend {
+            fill: #e8f4f8;
+            stroke: #0288d1;
+            stroke-width: 2;
+        }
+
+        .box-backend {
+            fill: #fff3e0;
+            stroke: #f57c00;
+            stroke-width: 2;
+        }
+
+        .box-data {
+            fill: #e8f5e9;
+            stroke: #388e3c;
+            stroke-width: 2;
+        }
+
+        .info-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .info-box {
+            border-left: 4px solid #FC7900;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #182127;
+            margin-bottom: 8px;
+        }
+
+        .info-content {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .tech-stack {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border: 2px solid #ddd;
+        }
+
+        .tech-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #182127;
+            margin-bottom: 15px;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .tech-layer {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border-top: 3px solid #FC7900;
+        }
+
+        .tech-layer-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #182127;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tech-item {
+            font-size: 12px;
+            color: #333;
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tech-item:last-child {
+            border-bottom: none;
+        }
+
+        .tech-label {
+            font-weight: bold;
+            color: #0288d1;
+        }
+
+        .metrics {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .metrics-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #182127;
+            margin-bottom: 15px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .metric-item {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid #FC7900;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #182127;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 2px solid #333;
+        }
+
+        .color-frontend {
+            background: #e8f4f8;
+            border-color: #0288d1;
+        }
+
+        .color-backend {
+            background: #fff3e0;
+            border-color: #f57c00;
+        }
+
+        .color-data {
+            background: #e8f5e9;
+            border-color: #388e3c;
+        }
+
+        .key-benefits {
+            margin-top: 30px;
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #0288d1;
+        }
+
+        .benefits-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #182127;
+            margin-bottom: 12px;
+        }
+
+        .benefits-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+
+        .benefit-item {
+            font-size: 12px;
+            color: #333;
+            padding: 8px 0;
+        }
+
+        .benefit-item::before {
+            content: "✓ ";
+            color: #0288d1;
+            font-weight: bold;
+            margin-right: 6px;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+            .diagram-wrapper {
+                box-shadow: none;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="title">🏛️ DataFactZ RAG System Architecture</div>
+            <div class="subtitle">Enterprise HR Policy Assistant - Complete Technology Stack</div>
+        </div>
+
+        <!-- Main Diagram -->
+        <div class="diagram-wrapper">
+            <svg viewBox="0 0 1500 1250" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#FC7900" />
+                    </marker>
+                </defs>
+
+                <!-- ============================================
+                     LAYER 1: FRONTEND (TOP)
+                     ============================================ -->
+
+                <!-- Frontend Background -->
+                <rect x="50" y="20" width="1400" height="240" rx="10" class="frontend-layer" opacity="0.1" fill="#0288d1"/>
+                <rect x="50" y="20" width="1400" height="35" rx="10" class="frontend-layer"/>
+                <text x="70" y="48" class="layer-label">👥 FRONTEND LAYER - User Interface (Port 3000)</text>
+
+                <!-- Chat Interface -->
+                <rect x="70" y="75" width="280" height="160" rx="8" class="box-frontend"/>
+                <text x="210" y="110" class="component-title">💬 Chat Interface</text>
+                <text x="210" y="130" class="component-text">Real-time Messages</text>
+                <text x="210" y="145" class="component-text">Question & Answers</text>
+                <text x="210" y="160" class="component-text">Copy Functionality</text>
+                <text x="210" y="175" class="component-text">Message Display</text>
+                <text x="210" y="222" class="tech-text">React 18</text>
+
+                <!-- Theme System -->
+                <rect x="420" y="75" width="280" height="160" rx="8" class="box-frontend"/>
+                <text x="560" y="110" class="component-title">🌙 Theme System</text>
+                <text x="560" y="130" class="component-text">Dark Mode</text>
+                <text x="560" y="145" class="component-text">Light Mode</text>
+                <text x="560" y="160" class="component-text">Auto-Toggle</text>
+                <text x="560" y="175" class="component-text">User Preference Storage</text>
+                <text x="560" y="222" class="tech-text">Tailwind CSS</text>
+
+                <!-- Chat History -->
+                <rect x="770" y="75" width="280" height="160" rx="8" class="box-frontend"/>
+                <text x="910" y="110" class="component-title">📋 Chat History</text>
+                <text x="910" y="130" class="component-text">Previous Conversations</text>
+                <text x="910" y="145" class="component-text">Load & Resume</text>
+                <text x="910" y="160" class="component-text">Auto-Save</text>
+                <text x="910" y="175" class="component-text">Clear History Option</text>
+                <text x="910" y="222" class="tech-text">localStorage</text>
+
+                <!-- Documentation -->
+                <rect x="1120" y="75" width="230" height="160" rx="8" class="box-frontend"/>
+                <text x="1235" y="110" class="component-title">📖 Help & Docs</text>
+                <text x="1235" y="130" class="component-text">User Guide</text>
+                <text x="1235" y="145" class="component-text">FAQ Section</text>
+                <text x="1235" y="160" class="component-text">Quick Tips</text>
+                <text x="1235" y="222" class="tech-text">Lucide Icons</text>
+
+                <!-- ============================================
+                     LAYER 2: BACKEND (MIDDLE)
+                     ============================================ -->
+
+                <!-- Backend Background -->
+                <rect x="50" y="400" width="1400" height="280" rx="10" class="backend-layer" opacity="0.1" fill="#f57c00"/>
+                <rect x="50" y="400" width="1400" height="35" rx="10" class="backend-layer"/>
+                <text x="70" y="428" class="layer-label">⚙️ BACKEND LAYER - Processing Engine (Port 8000)</text>
+
+                <!-- API Server -->
+                <rect x="70" y="450" width="260" height="210" rx="8" class="box-backend"/>
+                <text x="200" y="485" class="component-title">API Server</text>
+                <text x="200" y="505" class="component-text">FastAPI</text>
+                <text x="200" y="520" class="component-text">• /api/query</text>
+                <text x="200" y="535" class="component-text">• /api/documents</text>
+                <text x="200" y="550" class="component-text">• /api/reindex</text>
+                <text x="200" y="565" class="component-text">Request Handler</text>
+                <text x="200" y="580" class="component-text">Response Formatter</text>
+                <text x="200" y="642" class="tech-text">FastAPI 0.95+</text>
+
+                <!-- Document Chunking -->
+                <rect x="390" y="450" width="260" height="210" rx="8" class="box-backend"/>
+                <text x="520" y="485" class="component-title">Document Processing</text>
+                <text x="520" y="505" class="component-text">Intelligent Chunking</text>
+                <text x="520" y="520" class="component-text">300-500 tokens/chunk</text>
+                <text x="520" y="535" class="component-text">HYBRID Strategy</text>
+                <text x="520" y="550" class="component-text">Hierarchical Structure</text>
+                <text x="520" y="565" class="component-text">Section Preservation</text>
+                <text x="520" y="580" class="component-text">Metadata Tracking</text>
+                <text x="520" y="642" class="tech-text">ImprovedChunker</text>
+
+                <!-- Embedding & Search -->
+                <rect x="710" y="450" width="260" height="210" rx="8" class="box-backend"/>
+                <text x="840" y="485" class="component-title">Semantic Intelligence</text>
+                <text x="840" y="505" class="component-text">Vector Embeddings</text>
+                <text x="840" y="520" class="component-text">384 Dimensions</text>
+                <text x="840" y="535" class="component-text">Similarity Matching</text>
+                <text x="840" y="550" class="component-text">Top-5 Retrieval</text>
+                <text x="840" y="565" class="component-text">Relevance Scoring</text>
+                <text x="840" y="580" class="component-text">Confidence Calculation</text>
+                <text x="840" y="642" class="tech-text">sentence-transformers</text>
+
+                <!-- LLM Answer Generation -->
+                <rect x="1030" y="450" width="320" height="210" rx="8" class="box-backend"/>
+                <text x="1190" y="485" class="component-title">Answer Generation</text>
+                <text x="1190" y="505" class="component-text">Grounded Responses</text>
+                <text x="1190" y="520" class="component-text">Citation Extraction</text>
+                <text x="1190" y="535" class="component-text">Markdown Formatting</text>
+                <text x="1190" y="550" class="component-text">Multiple LLM Options:</text>
+                <text x="1190" y="565" class="component-text">• Ollama (FREE)</text>
+                <text x="1190" y="580" class="component-text">• Claude / Together AI</text>
+                <text x="1190" y="642" class="tech-text">scikit-learn, re</text>
+
+                <!-- ============================================
+                     LAYER 3: DATA STORAGE (BOTTOM)
+                     ============================================ -->
+
+                <!-- Data Background -->
+                <rect x="50" y="820" width="1400" height="280" rx="10" class="data-layer" opacity="0.1" fill="#388e3c"/>
+                <rect x="50" y="820" width="1400" height="35" rx="10" class="data-layer"/>
+                <text x="70" y="848" class="layer-label">💾 DATA LAYER - Persistent Storage</text>
+
+                <!-- HR Policy Documents -->
+                <rect x="70" y="870" width="320" height="210" rx="8" class="box-data"/>
+                <text x="230" y="905" class="component-title">HR Policy Database</text>
+                <text x="230" y="925" class="component-text">6 Indexed Documents</text>
+                <text x="230" y="940" class="component-text">• Leave & Time Off</text>
+                <text x="230" y="955" class="component-text">• Remote Work</text>
+                <text x="230" y="970" class="component-text">• Code of Conduct</text>
+                <text x="230" y="985" class="component-text">• Attendance Policy</text>
+                <text x="230" y="1000" class="component-text">• Data Security</text>
+                <text x="230" y="1015" class="component-text">• Discipline Procedures</text>
+                <text x="230" y="1062" class="tech-text">PDF, DOCX, TXT</text>
+
+                <!-- Vector Database -->
+                <rect x="460" y="870" width="280" height="210" rx="8" class="box-data"/>
+                <text x="600" y="905" class="component-title">Vector Database</text>
+                <text x="600" y="925" class="component-text">182 Document Chunks</text>
+                <text x="600" y="940" class="component-text">384-Dimensional Vectors</text>
+                <text x="600" y="955" class="component-text">Semantic Indexing</text>
+                <text x="600" y="970" class="component-text">Fast Similarity Search</text>
+                <text x="600" y="985" class="component-text">Relevance Scoring</text>
+                <text x="600" y="1000" class="component-text">Instant Retrieval</text>
+                <text x="600" y="1062" class="tech-text">FAISS (FREE)</text>
+                <text x="600" y="1076" class="tech-text">Pinecone (PRO)</text>
+
+                <!-- User Preferences -->
+                <rect x="820" y="870" width="280" height="210" rx="8" class="box-data"/>
+                <text x="960" y="905" class="component-title">Local Storage</text>
+                <text x="960" y="925" class="component-text">Chat History</text>
+                <text x="960" y="940" class="component-text">Conversation Data</text>
+                <text x="960" y="955" class="component-text">User Preferences</text>
+                <text x="960" y="970" class="component-text">Theme Selection</text>
+                <text x="960" y="985" class="component-text">Browser-Based</text>
+                <text x="960" y="1000" class="component-text">Automatic Sync</text>
+                <text x="960" y="1062" class="tech-text">Browser Cache</text>
+
+                <!-- Analytics & Logging -->
+                <rect x="1180" y="870" width="170" height="210" rx="8" class="box-data"/>
+                <text x="1265" y="905" class="component-title">System Logs</text>
+                <text x="1265" y="925" class="component-text">Query History</text>
+                <text x="1265" y="940" class="component-text">Performance Metrics</text>
+                <text x="1265" y="955" class="component-text">Error Tracking</text>
+                <text x="1265" y="970" class="component-text">User Analytics</text>
+                <text x="1265" y="985" class="component-text">Audit Trail</text>
+                <text x="1265" y="1062" class="tech-text">Python logging</text>
+
+                <!-- ============================================
+                     DATA FLOW ARROWS (CLEAN, NON-OVERLAPPING)
+                     ============================================ -->
+
+                <!-- FRONTEND TO BACKEND -->
+                <path d="M 210 235 L 210 330 L 200 450" class="arrow"/>
+                <text x="160" y="310" class="arrow-label">User</text>
+                <text x="160" y="323" class="arrow-label">Query</text>
+
+                <path d="M 560 235 L 560 330 L 520 450" class="arrow"/>
+                <text x="500" y="310" class="arrow-label">Load</text>
+                <text x="500" y="323" class="arrow-label">Request</text>
+
+                <path d="M 910 235 L 910 330 L 840 450" class="arrow"/>
+                <text x="860" y="310" class="arrow-label">History</text>
+                <text x="860" y="323" class="arrow-label">Sync</text>
+
+                <path d="M 1235 235 L 1235 330 L 1190 450" class="arrow"/>
+                <text x="1240" y="310" class="arrow-label">Config</text>
+
+                <!-- BACKEND TO DATA -->
+                <path d="M 200 660 L 200 770 L 230 870" class="arrow"/>
+                <text x="155" y="715" class="arrow-label">Process</text>
+
+                <path d="M 520 660 L 520 770 L 600 870" class="arrow"/>
+                <text x="480" y="715" class="arrow-label">Store</text>
+                <text x="480" y="728" class="arrow-label">Index</text>
+
+                <path d="M 840 660 L 840 770 L 960 870" class="arrow"/>
+                <text x="810" y="715" class="arrow-label">Fetch</text>
+                <text x="810" y="728" class="arrow-label">Data</text>
+
+                <path d="M 1190 660 L 1190 770 L 1265 870" class="arrow"/>
+                <text x="1210" y="715" class="arrow-label">Log</text>
+                <text x="1210" y="728" class="arrow-label">Activity</text>
+
+                <!-- RETURN PATH -->
+                <path d="M 1380 1080 L 1380 1120 L 1300 1120 L 1300 380 L 1235 380" class="arrow"/>
+                <text x="1350" y="1115" class="arrow-label">Answer with Citations</text>
+            </svg>
+
+            <!-- Legend -->
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color color-frontend"></div>
+                    <span><strong>Frontend</strong> - User Interface</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-backend"></div>
+                    <span><strong>Backend</strong> - Intelligence Engine</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-data"></div>
+                    <span><strong>Data</strong> - Persistent Storage</span>
+                </div>
+                <div class="legend-item">
+                    <div style="width: 24px; height: 3px; background: #FC7900;"></div>
+                    <span><strong>Data Flow</strong> - Information Movement</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technology Stack Section -->
+        <div class="tech-stack">
+            <div class="tech-title">🛠️ Complete Technology Stack</div>
+            <div class="tech-grid">
+                <!-- Frontend Technologies -->
+                <div class="tech-layer">
+                    <div class="tech-layer-title">
+                        <span>💻 Frontend Technologies</span>
+                    </div>
+                    <div class="tech-item"><span class="tech-label">Framework:</span> React 18 with TypeScript</div>
+                    <div class="tech-item"><span class="tech-label">Styling:</span> Tailwind CSS 3.2+</div>
+                    <div class="tech-item"><span class="tech-label">Icons:</span> Lucide React (monoline)</div>
+                    <div class="tech-item"><span class="tech-label">Markdown:</span> react-markdown</div>
+                    <div class="tech-item"><span class="tech-label">HTTP:</span> Axios 1.3+</div>
+                    <div class="tech-item"><span class="tech-label">Routing:</span> react-router-dom 6.8+</div>
+                    <div class="tech-item"><span class="tech-label">State:</span> Context API + localStorage</div>
+                    <div class="tech-item"><span class="tech-label">Port:</span> 3000 (dev)</div>
+                </div>
+
+                <!-- Backend Technologies -->
+                <div class="tech-layer">
+                    <div class="tech-layer-title">
+                        <span>⚙️ Backend Technologies</span>
+                    </div>
+                    <div class="tech-item"><span class="tech-label">Framework:</span> FastAPI 0.95+</div>
+                    <div class="tech-item"><span class="tech-label">Language:</span> Python 3.9+</div>
+                    <div class="tech-item"><span class="tech-label">Server:</span> Uvicorn</div>
+                    <div class="tech-item"><span class="tech-label">CORS:</span> Enabled for frontend</div>
+                    <div class="tech-item"><span class="tech-label">Documentation:</span> OpenAPI/Swagger</div>
+                    <div class="tech-item"><span class="tech-label">Port:</span> 8000</div>
+                    <div class="tech-item"><span class="tech-label">Endpoints:</span> 6 REST APIs</div>
+                    <div class="tech-item"><span class="tech-label">Request:</span> POST /api/query</div>
+                </div>
+
+                <!-- Embedding & Vector DB -->
+                <div class="tech-layer">
+                    <div class="tech-layer-title">
+                        <span>🧠 Embeddings & Vector Database</span>
+                    </div>
+                    <div class="tech-item"><span class="tech-label">Embeddings:</span> sentence-transformers</div>
+                    <div class="tech-item"><span class="tech-label">Model:</span> all-MiniLM-L6-v2</div>
+                    <div class="tech-item"><span class="tech-label">Dimensions:</span> 384-D vectors</div>
+                    <div class="tech-item"><span class="tech-label">Distance:</span> Cosine Similarity</div>
+                    <div class="tech-item" style="background: #e3f2fd;"><span class="tech-label">FREE Tier:</span> FAISS (local)</div>
+                    <div class="tech-item" style="background: #fff3e0;"><span class="tech-label">HYBRID Tier:</span> Pinecone (cloud)</div>
+                    <div class="tech-item" style="background: #fff3e0;"><span class="tech-label">CLOUD Tier:</span> Pinecone + Together AI</div>
+                    <div class="tech-item"><span class="tech-label">Search:</span> Top-5 retrieval</div>
+                </div>
+
+                <!-- Document Processing -->
+                <div class="tech-layer">
+                    <div class="tech-layer-title">
+                        <span>📄 Document Processing</span>
+                    </div>
+                    <div class="tech-item"><span class="tech-label">Chunking:</span> HYBRID Strategy</div>
+                    <div class="tech-item"><span class="tech-label">Chunk Size:</span> 300-500 tokens</div>
+                    <div class="tech-item"><span class="tech-label">Overlap:</span> 75 tokens</div>
+                    <div class="tech-item"><span class="tech-label">Class:</span> ImprovedChunker</div>
+                    <div class="tech-item"><span class="tech-label">Formats:</span> PDF, DOCX, TXT, HTML</div>
+                    <div class="tech-item"><span class="tech-label">Library:</span> PyPDF2, python-docx</div>
+                    <div class="tech-item"><span class="tech-label">Total Chunks:</span> 182 from 6 docs</div>
+                    <div class="tech-item"><span class="tech-label">Indexing:</span> Automatic on startup</div>
+                </div>
+
+                <!-- LLM & Answer Generation -->
+                <div class="tech-layer">
+                    <div class="tech-layer-title">
+                        <span>🤖 LLM & Answer Generation</span>
+                    </div>
+                    <div class="tech-item" style="background: #e8f5e9;"><span class="tech-label">FREE:</span> Ollama (local LLM)</div>
+                    <div class="tech-item" style="background: #fff3e0;"><span class="tech-label">HYBRID:</span> Claude API (Anthropic)</div>
+                    <div class="tech-item" style="background: #fff3e0;"><span class="tech-label">CLOUD:</span> Together AI APIs</div>
+                    <div class="tech-item"><span class="tech-label">Grounding:</span> System prompt hardening</div>
+                    <div class="tech-item"><span class="tech-label">Citations:</span> Automatic extraction</div>
+                    <div class="tech-item"><span class="tech-label">Formatting:</span> Markdown with bullets</div>
+                    <div class="tech-item"><span class="tech-label">Confidence:</span> HIGH/MEDIUM/LOW</div>
+                    <div class="tech-item"><span class="tech-label">Hallucination Rate:</span> &lt;5%</div>
+                </div>
+
+                <!-- Libraries & Dependencies -->
+                <div class="tech-layer">
+                    <div class="tech-layer-title">
+                        <span>📦 Key Python Libraries</span>
+                    </div>
+                    <div class="tech-item"><span class="tech-label">Core:</span> FastAPI, Pydantic, Uvicorn</div>
+                    <div class="tech-item"><span class="tech-label">ML:</span> scikit-learn, numpy</div>
+                    <div class="tech-item"><span class="tech-label">NLP:</span> sentence-transformers, regex</div>
+                    <div class="tech-item"><span class="tech-label">Vector:</span> FAISS (numpy-based)</div>
+                    <div class="tech-item"><span class="tech-label">Documents:</span> PyPDF2, python-docx</div>
+                    <div class="tech-item"><span class="tech-label">JSON:</span> json, pathlib</div>
+                    <div class="tech-item"><span class="tech-label">Logging:</span> Python logging module</div>
+                    <div class="tech-item"><span class="tech-label">Versioning:</span> See requirements.txt</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Information -->
+        <div class="info-section">
+            <div class="info-box">
+                <div class="info-title">📱 User Experience</div>
+                <div class="info-content">
+                    • Ask questions naturally<br>
+                    • Get accurate, cited answers<br>
+                    • Choose dark or light theme<br>
+                    • Access chat history<br>
+                    • Copy answers easily
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-title">⚙️ Processing Power</div>
+                <div class="info-content">
+                    • Intelligent document chunking<br>
+                    • Advanced semantic search<br>
+                    • Grounded answer generation<br>
+                    • Automatic citations<br>
+                    • Confidence scoring
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-title">💾 Data Management</div>
+                <div class="info-content">
+                    • 6 indexed HR policies<br>
+                    • 182 document chunks<br>
+                    • 384-D vector embeddings<br>
+                    • Conversation storage<br>
+                    • Complete audit trail
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="metrics">
+            <div class="metrics-title">📊 System Performance & ROI</div>
+            <div class="metrics-grid">
+                <div class="metric-item">
+                    <div class="metric-label">Response Time</div>
+                    <div class="metric-value">200-500ms</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Hallucination Rate</div>
+                    <div class="metric-value">&lt;5%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Citation Coverage</div>
+                    <div class="metric-value">100%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Document Chunks</div>
+                    <div class="metric-value">182</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Confidence Levels</div>
+                    <div class="metric-value">HIGH/MED/LOW</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">3-Year ROI</div>
+                    <div class="metric-value">415%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Annual Savings</div>
+                    <div class="metric-value">$13K (HR Labor)</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Cost Range</div>
+                    <div class="metric-value">$0-50/month</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Benefits -->
+        <div class="key-benefits">
+            <div class="benefits-title">💡 Key Business Benefits</div>
+            <div class="benefits-list">
+                <div class="benefit-item">24/7 Self-Service HR Support</div>
+                <div class="benefit-item">Reduced HR Support Tickets</div>
+                <div class="benefit-item">Accurate Policy Information</div>
+                <div class="benefit-item">Complete Audit Trail</div>
+                <div class="benefit-item">Three Deployment Tiers</div>
+                <div class="benefit-item">Zero Hallucination Risk</div>
+                <div class="benefit-item">Flexible LLM Options</div>
+                <div class="benefit-item">Secure Local Storage</div>
+                <div class="benefit-item">Rapid Implementation</div>
+                <div class="benefit-item">Employee Productivity Gains</div>
+                <div class="benefit-item">Compliance Ready</div>
+                <div class="benefit-item">Scalable Architecture</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

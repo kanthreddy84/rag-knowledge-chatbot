@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm start *)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(python api_server.py)",
+      "Bash(curl -s -X POST http://localhost:8000/api/query -H 'Content-Type: application/json' -d '{\"query\":\"What is the dress code?\",\"conversation_history\":[]}')",
+      "Bash(curl -s http://localhost:8000/health)",
+      "Bash(python -m json.tool)",
+      "Bash(curl -s -X POST http://localhost:8000/api/reindex)",
+      "Bash(npm install *)"
+    ]
+  }
+}

@@ -1,0 +1,184 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# RAG Knowledge Chatbot - Python Dependencies
+# Last Updated: 2026-08-14
+#
+# ⭐ 100% FREE SETUP AVAILABLE - No API Costs Required
+# ═══════════════════════════════════════════════════════════════════════════
+
+# QUICK CHOICE:
+# Pick ONE setup below and install accordingly
+#
+# Option A: FREE ($0/month)
+# ├─ pip install -r requirements.txt
+# ├─ Remove: anthropic, together, openai, pinecone
+# └─ Use: sentence-transformers + FAISS + Ollama
+#
+# Option B: HYBRID ($3-5/month) ← RECOMMENDED
+# ├─ pip install -r requirements.txt
+# ├─ Remove: together, openai
+# └─ Use: sentence-transformers + Pinecone free + Claude
+#
+# Option C: CLOUD ($40-50/month)
+# ├─ pip install -r requirements.txt (keep all)
+# └─ Full cloud setup
+
+# ═══════════════════════════════════════════════════════════════════════════
+# CORE DEPENDENCIES - ALWAYS NEEDED
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Document Processing (100% FREE)
+pypdf==4.2.0
+python-docx==1.2.0
+beautifulsoup4==4.12.3
+lxml==4.9.4
+
+# Web & API (FREE)
+requests==2.32.3
+fastapi==0.110.3
+uvicorn==0.27.0
+
+# Data Validation (FREE)
+pydantic==2.6.4
+pydantic-settings==2.2.1
+
+# Database (FREE - PostgreSQL driver)
+psycopg2-binary==2.9.9
+sqlalchemy==2.0.27
+
+# Configuration (FREE)
+python-dotenv==1.0.1
+
+# Utilities (FREE)
+tqdm==4.66.2
+typing-extensions==4.11.0
+tiktoken==0.7.0
+
+# ═══════════════════════════════════════════════════════════════════════════
+# EMBEDDINGS - CHOOSE ONE (All are FREE for local use)
+# ═══════════════════════════════════════════════════════════════════════════
+
+# ⭐ RECOMMENDED: Sentence Transformers (FREE, local)
+# No API key needed | Runs on CPU/GPU | 97% quality of paid services
+sentence-transformers==3.0.1
+transformers==4.41.0
+torch==2.3.0
+scikit-learn==1.5.0
+
+# OPTIONAL PAID: Together AI (if using Llama API)
+# Cost: $0.10 per 1M tokens | Remove if using free sentence-transformers
+# together==1.2.0
+
+# OPTIONAL PAID: OpenAI (if using OpenAI embeddings)
+# Cost: $0.13 per 1M input tokens | Remove if using free options
+# openai==1.52.0
+
+# ═══════════════════════════════════════════════════════════════════════════
+# VECTOR DATABASE - CHOOSE ONE (All have FREE options)
+# ═══════════════════════════════════════════════════════════════════════════
+
+# ⭐ RECOMMENDED: FAISS (FREE, local, fastest)
+# Facebook AI Similarity Search | No API key | Perfect for local use
+faiss-cpu==1.8.0
+# faiss-gpu==1.8.0  # Uncomment if you have NVIDIA GPU
+
+# ALTERNATIVE 1: ChromaDB (FREE, local, easy to use)
+# chromadb==0.4.24
+
+# ALTERNATIVE 2: Weaviate (FREE, self-hosted, powerful)
+# weaviate-client==4.1.2
+
+# ALTERNATIVE 3: Pinecone (FREE tier, cloud-managed)
+# Free tier: $0/month | Paid tier: $35+/month
+# pinecone-client==5.1.0
+
+# ═══════════════════════════════════════════════════════════════════════════
+# LLM - CHOOSE ONE (Mix of FREE and PAID)
+# ═══════════════════════════════════════════════════════════════════════════
+
+# ⭐ RECOMMENDED: Ollama (FREE, self-hosted)
+# Download: https://ollama.ai
+# Models: llama2, mistral, neural-chat (all free)
+# No Python package needed - runs as local server
+# Cost: $0/month | Quality: 80-90% of Claude | Setup: 10 minutes
+
+# RECOMMENDED PAID: Anthropic Claude API (PAID, best quality)
+# Cost: $3/1M input + $15/1M output tokens (~$3-5/month typical)
+# Quality: 95%+ | Setup: 2 minutes
+anthropic==0.34.0
+
+# ALTERNATIVE PAID: OpenAI (not needed if using above)
+# openai==1.52.0
+
+# ═══════════════════════════════════════════════════════════════════════════
+# DEVELOPMENT & TESTING (Optional - for developers only)
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Code formatting
+black==24.3.0
+
+# Linting
+pylint==3.2.0
+flake8==7.0.0
+
+# Type checking
+mypy==1.11.0
+
+# Testing
+pytest==8.2.0
+pytest-asyncio==0.23.3
+
+# ═══════════════════════════════════════════════════════════════════════════
+# SETUP INSTRUCTIONS
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# STEP 1: Choose your setup option (A, B, or C above)
+#
+# STEP 2: Install dependencies
+#   pip install -r requirements.txt
+#
+# STEP 3: If using FREE setup (Option A)
+#   a) Download Ollama: https://ollama.ai
+#   b) Run: ollama pull llama2
+#   c) Run: ollama serve
+#   d) Comment out paid packages above
+#
+# STEP 4: If using HYBRID setup (Option B)
+#   a) Install Ollama (see Option A)
+#   b) Get API key: https://console.anthropic.com/
+#   c) Create .env file with ANTHROPIC_API_KEY
+#
+# STEP 5: Read documentation
+#   - README.md (complete project info)
+#   - SETUP_GUIDE.md (installation help)
+#   - FREE_SETUP_GUIDE.md (100% free setup instructions)
+#
+# ═══════════════════════════════════════════════════════════════════════════
+# COST SUMMARY
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# OPTION A - 100% FREE
+# ├─ sentence-transformers + FAISS + Ollama
+# ├─ Cost: $0/month ✨
+# ├─ Setup: 30 minutes
+# ├─ Performance: Excellent (all local)
+# └─ Use case: Startups, POCs, learning
+#
+# OPTION B - HYBRID (RECOMMENDED for production)
+# ├─ sentence-transformers + Pinecone + Claude
+# ├─ Cost: ~$3-5/month
+# ├─ Setup: 20 minutes
+# ├─ Performance: Excellent (best quality answers)
+# └─ Use case: Production, balance of cost & quality
+#
+# OPTION C - FULL CLOUD
+# ├─ Together AI + Pinecone + Claude
+# ├─ Cost: ~$40-50/month
+# ├─ Setup: 15 minutes
+# ├─ Performance: Enterprise scale
+# └─ Use case: Large deployments, high volume
+#
+# ═══════════════════════════════════════════════════════════════════════════
+# PYTHON VERSION REQUIREMENT
+# ═══════════════════════════════════════════════════════════════════════════
+# Requires: Python 3.10 or higher
+# Check: python --version

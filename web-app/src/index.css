@@ -1,0 +1,161 @@
+@import url('https://rsms.me/inter/inter.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-yellow: #F4AD0B;
+  --color-orange: #FC7900;
+  --color-red: #E3434A;
+  --color-navy: #182127;
+  --color-dark: #0F1419;
+}
+
+html {
+  @apply font-inter scroll-smooth;
+  color-scheme: light dark;
+}
+
+/* Light mode (default when dark class is not present) */
+html:not(.dark) {
+  @apply bg-white;
+}
+
+html:not(.dark) body {
+  @apply bg-datafacz-gray-50 text-datafacz-gray-900 antialiased;
+}
+
+/* Dark mode (when dark class is present) */
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  @apply bg-datafacz-dark text-datafacz-gray-50 antialiased;
+}
+
+/* Component base styles */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2.5 rounded-md font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-datafacz-dark focus:ring-datafacz-orange;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-datafacz-yellow via-datafacz-orange to-datafacz-red text-white hover:shadow-hover active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply bg-datafacz-gray-800 text-datafacz-gray-50 hover:bg-datafacz-gray-700 active:scale-95;
+  }
+
+  .btn-tertiary {
+    @apply bg-transparent border border-datafacz-gray-700 text-datafacz-gray-50 hover:bg-datafacz-gray-900 hover:border-datafacz-orange active:scale-95;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-sm;
+  }
+
+  .btn-lg {
+    @apply px-6 py-3 text-base;
+  }
+
+  .card {
+    @apply bg-datafacz-gray-900 border border-datafacz-gray-800 rounded-xl transition-all duration-300 hover:border-datafacz-gray-700 hover:shadow-lg hover:translate-y-[-5px];
+  }
+
+  .input {
+    @apply w-full px-4 py-2.5 bg-datafacz-gray-800 border border-datafacz-gray-700 rounded-md text-datafacz-gray-50 placeholder-datafacz-gray-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-datafacz-orange focus:border-transparent;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-medium;
+  }
+
+  .badge-primary {
+    @apply bg-datafacz-orange/20 text-datafacz-orange;
+  }
+
+  .badge-success {
+    @apply bg-emerald-500/20 text-emerald-300;
+  }
+
+  .badge-error {
+    @apply bg-datafacz-red/20 text-datafacz-red;
+  }
+
+  .heading-1 {
+    @apply text-4xl font-bold tracking-tight;
+  }
+
+  .heading-2 {
+    @apply text-3xl font-bold tracking-tight;
+  }
+
+  .heading-3 {
+    @apply text-2xl font-bold tracking-tight;
+  }
+
+  .body-text {
+    @apply text-base text-datafacz-gray-300 leading-relaxed;
+  }
+
+  .text-muted {
+    @apply text-datafacz-gray-400;
+  }
+
+  .separator {
+    @apply h-px bg-gradient-to-r from-datafacz-gray-800 via-datafacz-gray-700 to-datafacz-gray-800;
+  }
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4B5563;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6B7280;
+}
+
+/* Selection */
+::selection {
+  background-color: #FC7900;
+  color: white;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: fadeIn 0.3s ease-in-out;
+}

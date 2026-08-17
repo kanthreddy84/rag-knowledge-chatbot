@@ -1,0 +1,389 @@
+REMOTE WORK POLICY
+Company: TechCorp Inc.
+Effective Date: March 1, 2024
+Version: 1.5
+
+================================================================================
+1. POLICY OVERVIEW
+
+1.1 Purpose
+This policy establishes guidelines for remote work at TechCorp Inc., enabling
+employees to work from locations other than company office facilities while
+maintaining productivity, security, and company culture.
+
+1.2 Policy Applicability
+This policy applies to all full-time employees and approved part-time employees.
+Temporary/contract workers require special approval from HR.
+
+1.3 Policy Philosophy
+Remote work is a privilege based on role requirements, performance history, and
+business needs. Remote work arrangements require mutual agreement between the
+employee and manager.
+
+================================================================================
+2. REMOTE WORK ELIGIBILITY
+
+2.1 Role-Based Eligibility
+The following roles are eligible for remote work:
+- Software Engineering (100% remote eligible)
+- Product Management (hybrid eligible)
+- Design (hybrid eligible)
+- Data Analytics (hybrid eligible)
+- Finance (hybrid eligible)
+- HR (hybrid eligible)
+- Marketing (hybrid eligible)
+
+The following roles are NOT eligible for remote work:
+- Facilities Management (on-site required)
+- Reception/Administrative (on-site required)
+- Sales (on-site or client-site required)
+- Operations (on-site required)
+
+2.2 Performance-Based Eligibility
+Employees must meet the following criteria:
+- Employed for minimum 6 months
+- Performance rating of "meets expectations" or higher
+- No active disciplinary action
+- Demonstrated ability to work independently
+- Reliable communication skills
+
+2.3 Exceptions
+Ineligible employees may request exception consideration through their manager
+and VP. Exceptions are considered case-by-case based on business needs.
+
+================================================================================
+3. REMOTE WORK ARRANGEMENTS
+
+3.1 Remote Work Frequency Options
+
+Full-Remote: Work entirely from home (software engineers only)
+- 5 days per week from remote location
+- Quarterly in-person office visits required (at least 4 days per quarter)
+- Annual company meeting attendance mandatory
+
+Hybrid Schedule (2 days remote): Most common arrangement
+- Monday-Friday, choose 2 days per week to work remotely
+- 3 days per week in office for collaboration
+- Can adjust remote days weekly with manager approval
+- Must maintain consistent schedule for team coordination
+
+Hybrid Schedule (3 days remote):
+- 3 days per week remote (higher discretion)
+- 2 days per week in office
+- Requires VP approval
+- Must maintain in-office presence on key meeting days
+
+Flexible Remote:
+- Case-by-case basis
+- Requires executive approval
+- Must maintain minimum office presence (typically 1 day/week)
+
+3.2 Remote Work Agreement
+All remote work arrangements require:
+1. Written agreement between employee and manager
+2. Manager approval
+3. HR sign-off
+4. Equipment and setup requirements completed
+5. Security compliance confirmed
+
+3.3 Duration and Review
+Remote work arrangements are reviewed:
+- After initial 90-day trial period
+- Annually with performance review
+- Can be modified or terminated with 30 days notice
+- May be suspended for business reasons
+
+================================================================================
+4. IN-OFFICE REQUIREMENTS
+
+4.1 Mandatory Office Days
+All remote-eligible employees must be in office for:
+- Team meetings (typically Tuesday and Wednesday)
+- Company all-hands meetings (once per month, Friday)
+- Quarterly planning sessions (full team, 2 days)
+- Annual conference and training (3 days minimum)
+
+4.2 Equipment Setup Days
+New remote employees must spend first week in office:
+- Day 1: Onboarding and equipment setup
+- Days 2-5: Transition and training
+
+4.3 Holiday Office Closure
+During office closure periods (typically December 24-27, July 4 week),
+remote work is not permitted and must use PTO or unpaid leave.
+
+================================================================================
+5. REMOTE WORK SETUP AND EQUIPMENT
+
+5.1 Home Office Requirements
+Remote workers must maintain a home office with:
+- Dedicated, secure workspace (not public areas)
+- Proper desk and ergonomic chair
+- Reliable internet connection (minimum 50 Mbps)
+- Quiet environment suitable for video calls
+- Secure, lockable storage for company materials
+
+5.2 Equipment Provided by TechCorp
+Company-provided equipment (issued upon approval):
+- Laptop or desktop computer
+- Monitor(s) (up to 2)
+- Keyboard and mouse
+- Headset with microphone
+- Docking station (optional)
+- VPN equipment if required
+
+5.3 Equipment Cost Reimbursement
+One-time reimbursement for home office setup:
+- Internet upgrade: Up to $100
+- Desk/Chair: Up to $500 (pre-approval required)
+- Monitor: Up to $300 per monitor (max 2)
+- Lighting/Accessories: Up to $100
+
+Reimbursement requires receipts and manager approval. Budget available only
+once per calendar year.
+
+5.4 Maintenance and Support
+- IT support available 8am-6pm weekdays via remote support
+- Hardware repairs: Ship to/from company facility
+- Software support: Remote assistance available
+
+5.5 Equipment Return
+Upon termination or change to on-site role:
+- All company equipment must be returned within 5 business days
+- Employee responsible for shipping costs if applicable
+- Final check must be completed with IT
+
+================================================================================
+6. WORK HOURS AND AVAILABILITY
+
+6.1 Core Hours
+All remote employees must be available during core business hours:
+- Monday-Friday, 10am-3pm EST (synchronous collaboration time)
+- Outside core hours, flexible based on role and manager approval
+- After-hours availability based on role requirements (e.g., on-call)
+
+6.2 Time Zone Considerations
+- Remote employees in Pacific zone must adjust schedule to accommodate EST team
+- Start times typically 7-9am PST / 10am-12pm EST
+- Extreme time zones (9+ hours difference) require VP approval
+
+6.3 Overtime and Vacation Coverage
+- Remote work does not excuse overtime obligations
+- During vacation coverage periods, must check in daily with manager
+- OOO (out of office) messages required when unavailable
+
+6.4 Response Time Expectations
+- Email: Response within 2 hours during business hours
+- Slack/chat: Immediate response during core hours
+- Missed meetings: Provide explanation to manager within 24 hours
+
+================================================================================
+7. COMMUNICATION AND COLLABORATION
+
+7.1 Communication Tools
+Required tools for remote work:
+- Slack: Real-time chat and team communication
+- Zoom/Microsoft Teams: Video conferencing
+- Google Workspace: Documents and collaboration
+- GitHub/Project Management: Code and task management
+
+All tools must be installed and tested before remote work begins.
+
+7.2 Meeting Attendance
+- All scheduled meetings are mandatory
+- Must use video on for team meetings (camera-on culture)
+- Must test audio/video 5 minutes before meeting
+- Background must be professional or use virtual background
+
+7.3 1-on-1 Meetings
+- Weekly one-on-ones with manager (video required)
+- Monthly skip-level meetings with VP or above (video required)
+- Career development discussions quarterly (in-person preferred)
+
+7.4 Asynchronous Communication
+- Document decisions in writing (email/Slack)
+- Do not rely on verbal communication only
+- Update project status in tracking system daily
+- Use @mentions to get attention for urgent items
+
+================================================================================
+8. SECURITY AND CONFIDENTIALITY
+
+8.1 Data Security Requirements
+Remote workers must comply with:
+- Use company VPN for all company system access
+- Enable all security features on company device (antivirus, firewall, etc.)
+- No company data on personal devices without explicit approval
+- Encrypt all home office wifi
+- Use strong passwords (minimum 12 characters, changed quarterly)
+
+8.2 Network Security
+- Do not use public wifi (coffee shops, airports, etc.) for work
+- Use mobile hotspot as backup option only
+- Keep personal and work devices separate when possible
+- Report any security concerns to IT within 24 hours
+
+8.3 Physical Security
+- Company materials must be stored securely
+- Do not work in public areas (coffee shops, libraries, etc.)
+- Secure all monitors when stepping away
+- Lock home office when not in use
+- No visitors or family access to work materials
+
+8.4 Confidentiality
+- No discussion of company business in shared spaces
+- Keep confidential materials out of sight during video calls
+- Use professional background (home office setting or virtual background)
+- Do not discuss business on personal calls/devices
+
+8.5 Security Compliance
+- Mandatory security training (annual)
+- Phishing simulation testing (quarterly)
+- Device security checks (IT may verify at any time)
+- Violation of security policies may result in termination of remote work
+
+================================================================================
+9. PERFORMANCE MANAGEMENT
+
+9.1 Performance Expectations
+Remote workers are held to the same performance standards as office workers:
+- Same deadlines and deliverables
+- Same quality standards
+- Same collaboration expectations
+- Same attendance requirements (core hours)
+
+9.2 Productivity Monitoring
+- Output/deliverables are the primary measure of productivity
+- Time tracking tools may be used (requires employee consent)
+- Manager may request screenshots or work logs (justifiable cause only)
+- Surveillance software is strictly prohibited
+
+9.3 Performance Reviews
+- Remote workers evaluated by same criteria as office workers
+- Lack of visibility should not negatively impact review
+- Manager responsible for regular feedback (weekly 1-on-1s)
+- Promotion decisions made on merit regardless of work location
+
+9.4 Underperformance
+If performance issues arise:
+1. Manager notifies employee within 48 hours
+2. Written performance plan provided (30-60 days)
+3. Weekly check-ins required
+4. If performance does not improve: may require return to office
+5. Continued underperformance may result in disciplinary action
+
+================================================================================
+10. EXPENSE AND LIABILITY
+
+10.1 Utility Reimbursement
+Remote workers may request partial utility reimbursement:
+- Monthly reimbursement: Up to $50 (covers internet and electricity)
+- Requires manager approval
+- Paid via payroll as taxable reimbursement
+- Maximum 12 months per calendar year
+
+10.2 Workers' Compensation
+- Home office injuries covered under workers' compensation if work-related
+- Must report injuries to HR within 24 hours
+- Only injuries during work hours covered
+- Company not responsible for home maintenance/repairs
+
+10.3 Liability and Insurance
+- Company not responsible for home damage or theft
+- Employee responsible for homeowner's/renter's insurance
+- Company equipment covered under company insurance
+
+================================================================================
+11. TERMINATION OF REMOTE WORK
+
+11.1 Reasons for Termination
+Remote work may be discontinued due to:
+- Employee request
+- Business needs requiring office presence
+- Performance issues
+- Failure to meet security requirements
+- Violation of remote work policy
+- Change in job role/department
+
+11.2 Termination Process
+- 30 days written notice to employee (except discipline)
+- Employee must return to office work schedule
+- Transition period (1-2 weeks) may be required
+- Equipment must be returned per policy
+
+11.3 Appeals
+Employees may appeal termination of remote work:
+- Submit written appeal to VP within 5 business days
+- Meet with HR to discuss concerns
+- VP will make final decision within 10 business days
+
+================================================================================
+12. HYBRID TEAM CONSIDERATIONS
+
+12.1 Inclusion and Culture
+- Hybrid teams ensure remote and office staff have equal access to:
+  - Meetings and decision-making
+  - Career development opportunities
+  - Social events and team bonding
+  - Information and communication
+
+12.2 Meeting Practices
+- If any team member is remote, ALL participants dial in
+- No in-office side conversations during remote calls
+- Rotate in-office days to include all team members in office interactions
+
+12.3 Team Building
+- Monthly virtual happy hours for remote teams
+- Quarterly in-person team building (everyone in office)
+- Annual company retreat (all remote employees required to attend)
+
+================================================================================
+13. FREQUENTLY ASKED QUESTIONS
+
+Q: Can I work from a coffee shop?
+A: No. Security policy requires dedicated, secure workspace. Coffee shops are
+   not permitted.
+
+Q: Can I take remote work on a business trip?
+A: Only with VP approval. Company security and VPN requirements must be met.
+
+Q: What if my internet goes down?
+A: Use mobile hotspot as temporary solution. Notify manager of outage. Report
+   repeated issues to IT.
+
+Q: Can I work from another country?
+A: Not without explicit approval from HR and Legal. Tax/visa implications must
+   be addressed.
+
+Q: What if I need to bring my child to work from home?
+A: This is not encouraged. Remote work requires focus and professional
+   environment. Childcare must be arranged.
+
+Q: Can I change my remote work schedule?
+A: Changes require manager approval. Core hours (10am-3pm EST) must be
+   maintained.
+
+================================================================================
+14. POLICY ADMINISTRATION
+
+14.1 Questions or Concerns
+Contact Human Resources:
+- Email: remote-work@techcorp.com
+- Phone: (555) 123-4567 ext. 105
+- Office: Building A, Room 201
+
+14.2 Policy Updates
+This policy is reviewed annually and updated as needed.
+Employees will be notified of changes via email.
+
+14.3 Compliance
+Failure to comply with this policy may result in:
+- Loss of remote work privileges
+- Disciplinary action
+- Termination of employment
+
+================================================================================
+Document Version: 1.5
+Last Updated: March 1, 2024
+Next Review: March 1, 2025
+Approved by: CEO, VP Engineering, VP Human Resources
