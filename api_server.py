@@ -359,28 +359,30 @@ async def upload_document(file: UploadFile = File(...)):
             content = await file.read()
             f.write(content)
 
-        # Process document
+        # Process document using the chunker
         with open(save_path, 'r', encoding='utf-8', errors='ignore') as f:
-            text = f.read()
+            full_text = f.read()
 
-        chunks = chunker.chunk_document(text, document_title=save_path.stem)
+        # Store full document
+        full_documents[save_path.stem] = full_text
 
-        # Store chunks and embeddings
-        for chunk in chunks:
-            chunks_store.append({
-                'text': chunk.text,
-                'document_title': chunk.document_title,
-                'section_path': chunk.section_path,
-                'chunk_number': chunk.chunk_number,
-                'token_count': chunk.token_count,
-            })
+        # Use process_document to chunk the file
+        chunks = chunker.process_document(save_path, save_path.stem)
 
-        chunk_texts = [c.text for c in chunks]
-        chunk_embeddings = embedding_model.encode(chunk_texts, show_progress_bar=False)
+        # Store chunks
+        for chunk_dict in chunks:
+            chunks_store.append(chunk_dict)
+
+        # Create embeddings
+        chunk_texts = [c['text'] for c in chunks]
+        if embedding_model:
+            chunk_embeddings = embedding_model.encode(chunk_texts, show_progress_bar=False)
+        else:
+            chunk_embeddings = np.zeros((len(chunk_texts), 384))
         embeddings_store.extend(chunk_embeddings)
 
         # Add document info
-        total_tokens = sum(c.token_count for c in chunks)
+        total_tokens = sum(c['token_count'] for c in chunks)
         doc_info = DocumentInfo(
             id=save_path.stem,
             filename=file.filename,
