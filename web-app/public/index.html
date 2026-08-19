@@ -14,5 +14,11 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <script>
+      // Set API URL based on current hostname
+      window.API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:8000'
+        : 'https://rag-knowledge-chatbot.onrender.com';
+    </script>
   </body>
 </html>
