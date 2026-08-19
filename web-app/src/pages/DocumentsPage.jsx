@@ -8,7 +8,9 @@ const DocumentsPage = () => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [reindexing, setReindexing] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
+  const fileInputRef = React.useRef(null);
 
   useEffect(() => {
     fetchDocuments();
@@ -18,7 +20,8 @@ const DocumentsPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get('http://localhost:8000/api/documents');
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+      const response = await axios.get(`${apiUrl}/api/documents`);
       setDocuments(response.data.documents || []);
     } catch (err) {
       setError('Failed to load documents');
@@ -28,11 +31,47 @@ const DocumentsPage = () => {
     }
   };
 
+  const handleFileSelect = async (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploading(true);
+    setError(null);
+
+    try {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
+      // Upload each file
+      for (let file of files) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        await axios.post(`${apiUrl}/api/documents/upload`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+      }
+
+      // Refresh documents list
+      await fetchDocuments();
+
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (err) {
+      setError(`Failed to upload documents: ${err.response?.data?.detail || err.message}`);
+      console.error('Upload error:', err);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleReindex = async () => {
     setReindexing(true);
     setError(null);
     try {
-      await axios.post('http://localhost:8000/api/reindex');
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+      await axios.post(`${apiUrl}/api/reindex`);
       await fetchDocuments();
       setReindexing(false);
     } catch (err) {
@@ -45,7 +84,8 @@ const DocumentsPage = () => {
   const handleDelete = async (docId) => {
     if (window.confirm('Are you sure you want to delete this document?')) {
       try {
-        await axios.delete(`http://localhost:8000/api/documents/${docId}`);
+        const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+        await axios.delete(`${apiUrl}/api/documents/${docId}`);
         setDocuments(docs => docs.filter(d => d.id !== docId));
       } catch (err) {
         setError('Failed to delete document');
@@ -183,7 +223,19 @@ const DocumentsPage = () => {
 
           {/* Upload section */}
           <Card className="border-dashed border-datafacz-gray-700 border-2">
-            <CardBody className="p-8 text-center cursor-pointer hover:border-datafacz-orange transition-colors">
+            <CardBody
+              className="p-8 text-center cursor-pointer hover:border-datafacz-orange transition-colors"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept=".txt,.pdf,.docx"
+                onChange={handleFileSelect}
+                disabled={uploading}
+                style={{ display: 'none' }}
+              />
               <Upload size={32} className="text-datafacz-gray-600 mx-auto mb-3" />
               <h3 className="font-semibold text-datafacz-gray-50 mb-1">
                 Upload new documents
@@ -191,8 +243,13 @@ const DocumentsPage = () => {
               <p className="text-sm text-datafacz-gray-400 mb-4">
                 Drag and drop or click to select PDF, DOCX, or TXT files
               </p>
-              <Button variant="secondary" size="sm">
-                Select files
+              <Button
+                variant="secondary"
+                size="sm"
+                loading={uploading}
+                disabled={uploading}
+              >
+                {uploading ? 'Uploading...' : 'Select files'}
               </Button>
             </CardBody>
           </Card>
