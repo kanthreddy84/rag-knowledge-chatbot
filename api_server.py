@@ -366,22 +366,8 @@ async def upload_document(file: UploadFile = File(...)):
         if file_ext == '.txt':
             with open(save_path, 'r', encoding='utf-8', errors='ignore') as f:
                 full_text = f.read()
-        elif file_ext == '.pdf':
-            try:
-                from PyPDF2 import PdfReader
-                reader = PdfReader(save_path)
-                full_text = "\n".join(page.extract_text() for page in reader.pages)
-            except ImportError:
-                raise Exception("PDF support requires PyPDF2. Install: pip install PyPDF2")
-        elif file_ext == '.docx':
-            try:
-                from docx import Document
-                doc = Document(save_path)
-                full_text = "\n".join(para.text for para in doc.paragraphs)
-            except ImportError:
-                raise Exception("DOCX support requires python-docx")
         else:
-            raise Exception(f"Unsupported file type: {file_ext}")
+            raise Exception(f"Only .txt files supported. Received: {file_ext}")
 
         if not full_text.strip():
             raise Exception("File is empty or could not be read")
@@ -431,6 +417,9 @@ async def upload_document(file: UploadFile = File(...)):
         }
 
     except Exception as e:
+        print(f"Upload error details: {type(e).__name__}: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Upload error: {str(e)}")
 
 @app.get("/api/documents/{doc_id}/content")
