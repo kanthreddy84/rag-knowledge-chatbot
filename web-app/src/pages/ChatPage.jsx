@@ -7,7 +7,6 @@ import { useChatHistory } from '../context/ChatHistoryContext';
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 import clsx from 'clsx';
-import { getApiUrl } from '../utils/apiConfig';
 
 const initialMessage = {
   id: 1,
@@ -76,7 +75,7 @@ const ChatPage = () => {
 
     try {
       // Call backend API
-      const apiUrl = getApiUrl();
+      const apiUrl = 'https://rag-knowledge-chatbot.onrender.com';
       const response = await axios.post(`${apiUrl}/api/query`, {
         query: input,
         conversation_history: updatedMessages.slice(-10),

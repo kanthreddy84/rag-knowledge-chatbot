@@ -3,7 +3,6 @@ import { FileText, Upload, RefreshCw, Trash2, Eye, Loader, AlertCircle } from 'l
 import { Button, Card, CardHeader, CardBody, CardFooter, Badge, Layout, ThemeToggle } from '../components';
 import Sidebar from '../components/Sidebar';
 import axios from 'axios';
-import { getApiUrl } from '../utils/apiConfig';
 
 const DocumentsPage = () => {
   const [documents, setDocuments] = useState([]);
@@ -21,7 +20,7 @@ const DocumentsPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const apiUrl = getApiUrl();
+      const apiUrl = 'https://rag-knowledge-chatbot.onrender.com';
       const response = await axios.get(`${apiUrl}/api/documents`);
       setDocuments(response.data.documents || []);
     } catch (err) {
@@ -40,7 +39,7 @@ const DocumentsPage = () => {
     setError(null);
 
     try {
-      const apiUrl = getApiUrl();
+      const apiUrl = 'https://rag-knowledge-chatbot.onrender.com';
 
       // Upload each file
       for (let file of files) {
@@ -71,7 +70,7 @@ const DocumentsPage = () => {
     setReindexing(true);
     setError(null);
     try {
-      const apiUrl = getApiUrl();
+      const apiUrl = 'https://rag-knowledge-chatbot.onrender.com';
       await axios.post(`${apiUrl}/api/reindex`);
       await fetchDocuments();
       setReindexing(false);
@@ -85,7 +84,7 @@ const DocumentsPage = () => {
   const handleDelete = async (docId) => {
     if (window.confirm('Are you sure you want to delete this document?')) {
       try {
-        const apiUrl = getApiUrl();
+        const apiUrl = 'https://rag-knowledge-chatbot.onrender.com';
         await axios.delete(`${apiUrl}/api/documents/${docId}`);
         setDocuments(docs => docs.filter(d => d.id !== docId));
       } catch (err) {
