@@ -359,15 +359,43 @@ async def upload_document(file: UploadFile = File(...)):
             content = await file.read()
             f.write(content)
 
-        # Process document using the chunker
-        with open(save_path, 'r', encoding='utf-8', errors='ignore') as f:
-            full_text = f.read()
+        # Extract text based on file type
+        file_ext = save_path.suffix.lower()
+        full_text = ""
+
+        if file_ext == '.txt':
+            with open(save_path, 'r', encoding='utf-8', errors='ignore') as f:
+                full_text = f.read()
+        elif file_ext == '.pdf':
+            try:
+                from PyPDF2 import PdfReader
+                reader = PdfReader(save_path)
+                full_text = "\n".join(page.extract_text() for page in reader.pages)
+            except ImportError:
+                raise Exception("PDF support requires PyPDF2. Install: pip install PyPDF2")
+        elif file_ext == '.docx':
+            try:
+                from docx import Document
+                doc = Document(save_path)
+                full_text = "\n".join(para.text for para in doc.paragraphs)
+            except ImportError:
+                raise Exception("DOCX support requires python-docx")
+        else:
+            raise Exception(f"Unsupported file type: {file_ext}")
+
+        if not full_text.strip():
+            raise Exception("File is empty or could not be read")
 
         # Store full document
         full_documents[save_path.stem] = full_text
 
+        # Create a temporary .txt file for the chunker to process
+        temp_txt_path = save_path.with_suffix('.txt')
+        with open(temp_txt_path, 'w', encoding='utf-8') as f:
+            f.write(full_text)
+
         # Use process_document to chunk the file
-        chunks = chunker.process_document(save_path, save_path.stem)
+        chunks = chunker.process_document(temp_txt_path, save_path.stem)
 
         # Store chunks
         for chunk_dict in chunks:
