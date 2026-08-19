@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Download, Copy, Check, ZoomIn, ZoomOut } from 'lucide-react';
 import { Button } from './Button';
 import axios from 'axios';
+import { getApiUrl } from '../utils/apiConfig';
 
 const DocumentViewer = ({ citation, onClose }) => {
   const [content, setContent] = useState('');
@@ -17,7 +18,7 @@ const DocumentViewer = ({ citation, onClose }) => {
         setLoading(true);
         setError(null);
 
-        const apiUrl = process.env.REACT_APP_API_URL || 'https://rag-knowledge-chatbot.onrender.com';
+        const apiUrl = getApiUrl();
         const docId = citation.document_id || citation.document_title.replace(/\s+/g, '_').toLowerCase();
         const url = `${apiUrl}/api/documents/${docId}/content`;
 
