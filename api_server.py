@@ -363,11 +363,38 @@ async def upload_document(file: UploadFile = File(...)):
         file_ext = save_path.suffix.lower()
         full_text = ""
 
+        print(f"Uploading file: {file.filename} ({file_ext})")
+
         if file_ext == '.txt':
+            print("Reading .txt file...")
             with open(save_path, 'r', encoding='utf-8', errors='ignore') as f:
                 full_text = f.read()
+
+        elif file_ext == '.pdf':
+            print("Extracting text from PDF...")
+            try:
+                import PyPDF2
+                with open(save_path, 'rb') as pdf_file:
+                    pdf_reader = PyPDF2.PdfReader(pdf_file)
+                    for page_num in range(len(pdf_reader.pages)):
+                        page = pdf_reader.pages[page_num]
+                        full_text += page.extract_text() + "\n"
+            except Exception as pdf_err:
+                print(f"PDF extraction error: {pdf_err}")
+                raise Exception(f"Failed to extract PDF text: {str(pdf_err)}")
+
+        elif file_ext == '.docx':
+            print("Extracting text from DOCX...")
+            try:
+                from docx import Document
+                doc = Document(save_path)
+                for paragraph in doc.paragraphs:
+                    full_text += paragraph.text + "\n"
+            except Exception as docx_err:
+                print(f"DOCX extraction error: {docx_err}")
+                raise Exception(f"Failed to extract DOCX text: {str(docx_err)}")
         else:
-            raise Exception(f"Only .txt files supported. Received: {file_ext}")
+            raise Exception(f"Unsupported file type: {file_ext}. Supported: .txt, .pdf, .docx")
 
         if not full_text.strip():
             raise Exception("File is empty or could not be read")
