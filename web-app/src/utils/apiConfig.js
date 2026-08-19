@@ -1,4 +1,12 @@
-// Auto-detect backend API URL - set by index.html script
+// Auto-detect backend API URL based on hostname
 export const getApiUrl = () => {
-  return window.API_URL || 'https://rag-knowledge-chatbot.onrender.com';
+  const hostname = window.location.hostname;
+
+  // If on localhost, use local backend
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://localhost:8000';
+  }
+
+  // For all other domains (Vercel, etc), use production backend
+  return 'https://rag-knowledge-chatbot.onrender.com';
 };
