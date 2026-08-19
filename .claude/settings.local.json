@@ -8,7 +8,9 @@
       "Bash(curl -s http://localhost:8000/health)",
       "Bash(python -m json.tool)",
       "Bash(curl -s -X POST http://localhost:8000/api/reindex)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(curl -I https://rag-knowledge-chatbot-kanthreddy84.vercel.app)",
+      "Bash(vercel deploy *)"
     ]
   }
 }

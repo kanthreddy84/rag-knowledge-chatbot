@@ -4,7 +4,6 @@ import { MessageSquare, FileText, Settings, Plus, LogOut, Trash2, AlertCircle } 
 import clsx from 'clsx';
 import { Button } from './Button';
 import { useChatHistory } from '../context/ChatHistoryContext';
-import './Sidebar.css';
 
 const Sidebar = () => {
   const location = useLocation();
@@ -45,13 +44,7 @@ const Sidebar = () => {
             DF
           </div>
           <div>
-            <p className="font-semibold dark:text-datafacz-gray-50 text-datafacz-gray-900 wave-text">
-              {'DataFactZ'.split('').map((char, index) => (
-                <span key={index} className="wave-char" style={{ '--char-index': index }}>
-                  {char}
-                </span>
-              ))}
-            </p>
+            <p className="font-semibold dark:text-datafacz-gray-50 text-datafacz-gray-900">DataFactZ</p>
             <p className="text-xs dark:text-datafacz-gray-500 text-datafacz-gray-600">HR Assistant</p>
           </div>
         </div>
