@@ -350,6 +350,8 @@ async def delete_document(doc_id: str):
 @app.post("/api/documents/upload")
 async def upload_document(file: UploadFile = File(...)):
     """Upload and index a new document"""
+    global chunks_store, embeddings_store, documents_store, full_documents
+
     try:
         # Save file
         save_path = Path("sample_data") / file.filename
