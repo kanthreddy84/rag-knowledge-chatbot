@@ -402,13 +402,23 @@ async def upload_document(file: UploadFile = File(...)):
         # Store full document
         full_documents[save_path.stem] = full_text
 
-        # Create a temporary .txt file for the chunker to process
-        temp_txt_path = save_path.with_suffix('.txt')
-        with open(temp_txt_path, 'w', encoding='utf-8') as f:
-            f.write(full_text)
+        # Chunk the text directly without using process_document
+        print("Chunking document...")
+        chunks = chunker.detect_sections(full_text)
 
-        # Use process_document to chunk the file
-        chunks = chunker.process_document(temp_txt_path, save_path.stem)
+        # Format chunks like process_document does
+        chunk_dicts = []
+        for idx, chunk_text in enumerate(chunks, 1):
+            token_count = chunker.count_tokens(chunk_text)
+            chunk_dicts.append({
+                'text': chunk_text,
+                'chunk_number': idx,
+                'document_title': save_path.stem,
+                'section_path': f'Section {idx}',
+                'token_count': token_count,
+            })
+
+        chunks = chunk_dicts
 
         # Store chunks
         for chunk_dict in chunks:
