@@ -337,61 +337,11 @@ async def get_documents():
 
 @app.post("/api/reindex")
 async def reindex_documents():
-    """Reindex all documents in sample_data folder"""
+    """Reindex all documents in sample_data folder - supports all file types"""
     global chunks_store, embeddings_store, documents_store, full_documents
 
     try:
-        data_folder = Path("sample_data")
-
-        if not data_folder.exists():
-            raise HTTPException(status_code=400, detail="sample_data folder not found")
-
-        policy_files = list(data_folder.glob("*.txt"))
-
-        if not policy_files:
-            raise HTTPException(status_code=400, detail="No text files found in sample_data")
-
-        # Reset stores
-        chunks_store = []
-        embeddings_store = []
-        documents_store = []
-        full_documents = {}
-
-        # Process each document
-        for file_path in sorted(policy_files):
-            # Read full document text
-            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                full_text = f.read()
-            full_documents[file_path.stem] = full_text
-
-            # Use improved chunker
-            chunks = chunker.process_document(file_path, file_path.stem)
-
-            # Store chunks
-            for chunk_dict in chunks:
-                chunks_store.append(chunk_dict)
-
-            # Create embeddings if model available
-            chunk_texts = [c['text'] for c in chunks]
-            if embedding_model:
-                chunk_embeddings = embedding_model.encode(chunk_texts, show_progress_bar=False)
-            else:
-                # Fallback: create dummy embeddings for keyword search
-                chunk_embeddings = np.zeros((len(chunk_texts), 384))
-            embeddings_store.extend(chunk_embeddings)
-
-            # Add document info
-            total_tokens = sum(c['token_count'] for c in chunks)
-            documents_store.append(DocumentInfo(
-                id=file_path.stem,
-                filename=file_path.name,
-                title=file_path.stem.replace('_', ' ').title(),
-                description=f"HR policy document with {len(chunks)} chunks",
-                chunk_count=len(chunks),
-                token_count=total_tokens,
-                indexed_at=datetime.now().isoformat(),
-                status="indexed"
-            ))
+        await ensure_documents_indexed()
 
         return {
             "status": "success",
