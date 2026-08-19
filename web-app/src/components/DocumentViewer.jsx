@@ -22,7 +22,7 @@ const DocumentViewer = ({ citation, onClose }) => {
         const url = `${apiUrl}/api/documents/${docId}/content`;
 
         console.log('Fetching document from:', url);
-        const response = await axios.get(url, { timeout: 10000 });
+        const response = await axios.get(url, { timeout: 30000 }); // 30 second timeout for large documents
 
         setContent(response.data.content);
       } catch (err) {

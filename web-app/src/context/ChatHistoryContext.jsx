@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 const ChatHistoryContext = createContext();
 
@@ -30,7 +30,7 @@ export const ChatHistoryProvider = ({ children }) => {
     }
   };
 
-  const saveConversation = (messages, existingId = null) => {
+  const saveConversation = useCallback((messages, existingId = null) => {
     if (messages.length === 0) return;
 
     // Use existing ID or create new one
@@ -66,16 +66,16 @@ export const ChatHistoryProvider = ({ children }) => {
 
     setCurrentConversationId(conversationId);
     return conversationId;
-  };
+  }, []);
 
-  const loadConversation = (conversationId) => {
+  const loadConversation = useCallback((conversationId) => {
     const conversation = conversations.find(c => c.id === conversationId);
     if (conversation) {
       setCurrentConversationId(conversationId);
       return conversation.messages;
     }
     return null;
-  };
+  }, [conversations]);
 
   const deleteConversation = (conversationId) => {
     setConversations(prev => prev.filter(c => c.id !== conversationId));

@@ -110,7 +110,8 @@ async def ensure_documents_indexed():
     try:
         data_folder = Path("sample_data")
         if data_folder.exists():
-            policy_files = list(data_folder.glob("*.txt"))
+            # Get ALL supported file types (txt, pdf, docx)
+            policy_files = list(data_folder.glob("*.txt")) + list(data_folder.glob("*.pdf")) + list(data_folder.glob("*.docx"))
             if policy_files:
                 chunks_store = []
                 embeddings_store = []
@@ -118,32 +119,83 @@ async def ensure_documents_indexed():
                 full_documents = {}
 
                 for file_path in sorted(policy_files):
-                    with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                        full_text = f.read()
-                    full_documents[file_path.stem] = full_text
+                    print(f"[STARTUP] Indexing: {file_path.name}")
+                    full_text = ""
+                    file_ext = file_path.suffix.lower()
 
-                    chunks = chunker.process_document(file_path, file_path.stem)
-                    for chunk_dict in chunks:
-                        chunks_store.append(chunk_dict)
+                    try:
+                        # Extract text based on file type
+                        if file_ext == '.txt':
+                            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                                full_text = f.read()
+                        elif file_ext == '.pdf':
+                            try:
+                                import PyPDF2
+                                with open(file_path, 'rb') as pdf_file:
+                                    pdf_reader = PyPDF2.PdfReader(pdf_file)
+                                    for page_num in range(len(pdf_reader.pages)):
+                                        page = pdf_reader.pages[page_num]
+                                        full_text += page.extract_text() + "\n"
+                            except Exception as pdf_err:
+                                print(f"PDF extraction error for {file_path.name}: {pdf_err}")
+                                continue
+                        elif file_ext == '.docx':
+                            try:
+                                from docx import Document
+                                doc = Document(file_path)
+                                for paragraph in doc.paragraphs:
+                                    full_text += paragraph.text + "\n"
+                            except Exception as docx_err:
+                                print(f"DOCX extraction error for {file_path.name}: {docx_err}")
+                                continue
 
-                    chunk_texts = [c['text'] for c in chunks]
-                    if embedding_model:
-                        chunk_embeddings = embedding_model.encode(chunk_texts, show_progress_bar=False)
-                    else:
-                        chunk_embeddings = np.zeros((len(chunk_texts), 384))
-                    embeddings_store.extend(chunk_embeddings)
+                        if not full_text.strip():
+                            print(f"[STARTUP] Skipping empty file: {file_path.name}")
+                            continue
 
-                    total_tokens = sum(c['token_count'] for c in chunks)
-                    documents_store.append(DocumentInfo(
-                        id=file_path.stem,
-                        filename=file_path.name,
-                        title=file_path.stem.replace('_', ' ').title(),
-                        description=f"HR policy document with {len(chunks)} chunks",
-                        chunk_count=len(chunks),
-                        token_count=total_tokens,
-                        indexed_at=datetime.now().isoformat(),
-                        status="indexed"
-                    ))
+                        # Use unique doc_id that includes file extension to avoid collisions
+                        doc_id = file_path.stem + "_" + file_ext.strip(".")
+                        full_documents[doc_id] = full_text
+
+                        # Use detect_sections for consistent chunking
+                        chunks = chunker.detect_sections(full_text)
+                        chunk_dicts = []
+                        for idx, chunk_text in enumerate(chunks, 1):
+                            token_count = chunker.count_tokens(chunk_text)
+                            chunk_dicts.append({
+                                'text': chunk_text,
+                                'chunk_number': idx,
+                                'document_title': doc_id,
+                                'section_path': f'Section {idx}',
+                                'token_count': token_count,
+                            })
+
+                        for chunk_dict in chunk_dicts:
+                            chunks_store.append(chunk_dict)
+
+                        chunk_texts = [c['text'] for c in chunk_dicts]
+                        if embedding_model:
+                            chunk_embeddings = embedding_model.encode(chunk_texts, show_progress_bar=False)
+                        else:
+                            chunk_embeddings = np.zeros((len(chunk_texts), 384))
+                        embeddings_store.extend(chunk_embeddings)
+
+                        total_tokens = sum(c['token_count'] for c in chunk_dicts)
+                        documents_store.append(DocumentInfo(
+                            id=doc_id,
+                            filename=file_path.name,
+                            title=file_path.stem.replace('_', ' ').title(),
+                            description=f"HR policy document with {len(chunk_dicts)} chunks",
+                            chunk_count=len(chunk_dicts),
+                            token_count=total_tokens,
+                            indexed_at=datetime.now().isoformat(),
+                            status="indexed"
+                        ))
+                        print(f"[STARTUP] ✓ Indexed {file_path.name}: {len(chunk_dicts)} chunks, {total_tokens} tokens")
+                    except Exception as file_err:
+                        print(f"[STARTUP] Error processing {file_path.name}: {file_err}")
+                        continue
+
     except Exception as e:
         print(f"Auto-reindex error: {e}")
 
@@ -157,9 +209,6 @@ async def query_documents(request: QueryRequest):
     if not request.query.strip():
         raise HTTPException(status_code=400, detail="Query cannot be empty")
 
-    # Always ensure documents are indexed (required for multi-worker environments)
-    await ensure_documents_indexed()
-
     if not chunks_store or not embeddings_store:
         raise HTTPException(
             status_code=503,
@@ -169,53 +218,67 @@ async def query_documents(request: QueryRequest):
     try:
         import time
         start_time = time.time()
+        print(f"[QUERY] Processing: {request.query[:50]}...")
 
         # Find similar chunks using embeddings or keyword matching
+        print(f"[QUERY] Using embedding model: {embedding_model is not None}")
         if embedding_model and embeddings_store:
             # Embed query using sentence transformers
             query_embedding = embedding_model.encode(request.query, show_progress_bar=False)
             similarities = cosine_similarity([query_embedding], embeddings_store)[0]
             top_indices = np.argsort(similarities)[::-1][:5]
         else:
-            # Fallback: improved keyword matching
-            query_words = set(request.query.lower().split())
+            # Fallback: improved keyword matching with word stem matching
+            query_words = request.query.lower().split()
             similarities = []
+
+            # Filter out common stop words
+            stop_words = {'the', 'a', 'an', 'and', 'or', 'is', 'to', 'of', 'in', 'at', 'for', 'by', 'this', 'that', 'are', 'was', 'be', 'been', 'have', 'has', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'as', 'with', 'from', 'on', 'it', 'its'}
+            important_words = [w for w in query_words if w not in stop_words]
+
             for chunk in chunks_store:
                 chunk_text = chunk['text'].lower()
-                chunk_words = set(chunk_text.split())
+                chunk_words = chunk_text.split()
 
-                # Count matching words (simpler and more effective than Jaccard)
-                matches = len(chunk_words & query_words)
+                # Score: count how many query words appear in chunk
+                score = 0
+                for qw in important_words:
+                    # Exact word match (highest priority)
+                    if qw in chunk_words:
+                        score += 40
+                    # Substring match or word stem - check if any word starts with query word
+                    elif any(word.startswith(qw[:3]) if len(qw) >= 3 else False for word in chunk_words):
+                        score += 20
+                    # Any appearance in text (low priority)
+                    elif qw in chunk_text:
+                        score += 10
 
-                # Also check for substring matches (e.g., "dress" in "dress code")
-                substring_matches = sum(1 for qw in query_words if qw in chunk_text)
-
-                # Combined score: prioritize exact word matches but also count substrings
-                if len(query_words) > 0:
-                    word_score = matches / len(query_words)
-                    substring_score = substring_matches / len(query_words)
-                    similarity = (word_score * 0.7 + substring_score * 0.3)
-                else:
-                    similarity = 0
+                # Normalize score to 0-1 range
+                max_score = len(important_words) * 40 if important_words else 1
+                similarity = min(score / max_score, 1.0) if max_score > 0 else 0
                 similarities.append(similarity)
 
             similarities = np.array(similarities)
             top_indices = np.argsort(similarities)[::-1][:5]
 
-        # Extract citations (lower threshold for better matching)
+        print(f"[QUERY] Found top {len(top_indices)} similar chunks")
+        # Extract citations (very low threshold for newly uploaded documents)
         citations = []
         for idx in top_indices:
-            if similarities[idx] > 0.2:  # Lowered threshold
+            if similarities[idx] > 0.15:  # Very low threshold to include all relevant results
                 chunk = chunks_store[idx]
                 # Get more context from the chunk
                 excerpt = chunk['text'][:300] if len(chunk['text']) > 300 else chunk['text']
 
-                # Get document_id from documents_store
-                doc_title = chunk.get('document_title', 'Unknown')
-                doc_id = next((d.id for d in documents_store if d.title == doc_title.replace('_', ' ').title()), doc_title)
+                # Document ID is already stored in chunk's document_title
+                doc_id = chunk.get('document_title', 'Unknown')
+
+                # Get document info for display title
+                doc_info = next((d for d in documents_store if d.id == doc_id), None)
+                display_title = doc_info.title if doc_info else doc_id.replace('_', ' ').title()
 
                 citations.append(Citation(
-                    document_title=doc_title,
+                    document_title=display_title,
                     document_id=doc_id,
                     section_path=chunk.get('section_path', ''),
                     excerpt=excerpt,
@@ -255,6 +318,7 @@ async def query_documents(request: QueryRequest):
             answer = "❌ I couldn't find relevant information in the policy documents.\n\n**Try:** Rephrase your question or ask about specific topics like vacation, remote work, or conduct."
 
         generation_time = time.time() - start_time
+        print(f"[QUERY] Generated answer in {generation_time:.2f}s with {len(citations)} citations")
 
         return QueryResponse(
             answer=answer,
@@ -401,8 +465,9 @@ async def upload_document(file: UploadFile = File(...)):
         if not full_text.strip():
             raise Exception("File is empty or could not be read")
 
-        # Store full document
-        full_documents[save_path.stem] = full_text
+        # Use unique doc_id that includes file extension to avoid collisions
+        doc_id = save_path.stem + "_" + file_ext.strip(".")
+        full_documents[doc_id] = full_text
 
         # Chunk the text directly without using process_document
         print("Chunking document...")
@@ -415,7 +480,7 @@ async def upload_document(file: UploadFile = File(...)):
             chunk_dicts.append({
                 'text': chunk_text,
                 'chunk_number': idx,
-                'document_title': save_path.stem,
+                'document_title': doc_id,
                 'section_path': f'Section {idx}',
                 'token_count': token_count,
             })
@@ -437,7 +502,7 @@ async def upload_document(file: UploadFile = File(...)):
         # Add document info
         total_tokens = sum(c['token_count'] for c in chunks)
         doc_info = DocumentInfo(
-            id=save_path.stem,
+            id=doc_id,
             filename=file.filename,
             title=save_path.stem.replace('_', ' ').title(),
             description="Newly uploaded document",
@@ -462,15 +527,26 @@ async def upload_document(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f"Upload error: {str(e)}")
 
 @app.get("/api/documents/{doc_id}/content")
-async def get_document_content(doc_id: str):
-    """Retrieve full document text for viewing"""
+async def get_document_content(doc_id: str, preview_only: bool = False):
+    """Retrieve document text for viewing (optimized for large documents)"""
+    print(f"[DOCUMENT] Requested doc_id: '{doc_id}'")
+    print(f"[DOCUMENT] Available doc_ids in full_documents: {list(full_documents.keys())}")
+
     if doc_id not in full_documents:
+        print(f"[DOCUMENT] ERROR: doc_id '{doc_id}' not found in full_documents")
         raise HTTPException(status_code=404, detail=f"Document '{doc_id}' not found")
+
+    content = full_documents[doc_id]
+
+    # For very large documents, optionally send preview
+    if preview_only and len(content) > 50000:
+        content = content[:50000] + "\n\n[Preview truncated - document is too large to display fully]"
 
     return {
         "document_id": doc_id,
-        "content": full_documents[doc_id],
-        "title": doc_id.replace('_', ' ').title()
+        "content": content,
+        "title": doc_id.replace('_', ' ').title(),
+        "is_preview": preview_only and len(content) > 50000
     }
 
 @app.get("/api/chunks/{chunk_index}")
@@ -516,53 +592,13 @@ async def get_docs():
 
 @app.on_event("startup")
 async def startup_event():
-    """Auto-reindex documents on startup"""
-    global chunks_store, embeddings_store, documents_store, full_documents
-
-    try:
-        data_folder = Path("sample_data")
-        if data_folder.exists():
-            policy_files = list(data_folder.glob("*.txt"))
-            if policy_files:
-                print("Indexing sample documents on startup...")
-                chunks_store = []
-                embeddings_store = []
-                documents_store = []
-                full_documents = {}
-
-                for file_path in sorted(policy_files):
-                    with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                        full_text = f.read()
-                    full_documents[file_path.stem] = full_text
-
-                    chunks = chunker.process_document(file_path, file_path.stem)
-                    for chunk_dict in chunks:
-                        chunks_store.append(chunk_dict)
-
-                    # Create embeddings if model available, otherwise use dummy embeddings
-                    chunk_texts = [c['text'] for c in chunks]
-                    if embedding_model:
-                        chunk_embeddings = embedding_model.encode(chunk_texts, show_progress_bar=False)
-                    else:
-                        # Fallback: create dummy embeddings (all zeros) for keyword search
-                        chunk_embeddings = np.zeros((len(chunk_texts), 384))
-                    embeddings_store.extend(chunk_embeddings)
-
-                    total_tokens = sum(c['token_count'] for c in chunks)
-                    documents_store.append(DocumentInfo(
-                        id=file_path.stem,
-                        filename=file_path.name,
-                        title=file_path.stem.replace('_', ' ').title(),
-                        description=f"HR policy document with {len(chunks)} chunks",
-                        chunk_count=len(chunks),
-                        token_count=total_tokens,
-                        indexed_at=datetime.now().isoformat(),
-                        status="indexed"
-                    ))
-
-                print(f"✓ Indexed {len(documents_store)} documents with {len(chunks_store)} chunks")
-    except Exception as e:
-        print(f"Error during startup indexing: {e}")
+    """Auto-reindex documents on startup - calls ensure_documents_indexed for all file types"""
+    print("Starting DataFactZ RAG API Server...")
+    print("Available at http://localhost:8000")
+    print("API docs at http://localhost:8000/docs")
+    print("Indexing sample documents on startup...")
+    await ensure_documents_indexed()
+    print(f"✓ Indexed {len(documents_store)} documents with {len(chunks_store)} chunks")
 
 if __name__ == "__main__":
     import uvicorn
